@@ -1,6 +1,6 @@
 # Maintainer: narayanls
 pkgname=br-voc
-pkgver=1.0.0
+pkgver=1.0.1
 pkgrel=1
 pkgdesc="Consulta à grafia das palavras no Vocabulário Ortográfico da Língua Portuguesa (VOLP/ABL)"
 arch=('any')
