@@ -371,9 +371,10 @@ class BrVocWindow(Adw.ApplicationWindow):
             entry = result.exact[0]
             extra = f" ({len(result.exact)} registros)" if len(result.exact) > 1 else ""
             origin = "" if entry.origem == ORIGIN_VOLP else f" · {entry.origem_label}"
-            return f"{entry.descricao}{origin}{extra}".strip(" ·")
+            sound = f"pronúncia: {entry.pronuncia} · " if entry.pronuncia else ""
+            return f"{sound}{entry.descricao}{origin}{extra}".strip(" ·")
         if result.status is Status.VARIANT:
-            forms = ", ".join(f"“{e.termo}”" for e in result.variants)
+            forms = ", ".join(f"“{e.rotulo}”" for e in result.variants)
             return f"O vocabulário registra: {forms}"
         if result.status is Status.NOT_FOUND:
             if result.suggestions:
@@ -382,7 +383,7 @@ class BrVocWindow(Adw.ApplicationWindow):
         return ""
 
     def _entry_row(self, entry: Entry, clickable: bool) -> Adw.ActionRow:
-        row = Adw.ActionRow(title=entry.termo, subtitle=entry.descricao, use_markup=False)
+        row = Adw.ActionRow(title=entry.rotulo, subtitle=entry.descricao, use_markup=False)
         legend = explain_description(entry.descricao)
         if legend:
             row.set_tooltip_text(legend)

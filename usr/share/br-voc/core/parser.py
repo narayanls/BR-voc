@@ -13,6 +13,10 @@ Exemplos de linhas reais:
     <span class="item-palavra"><strong>sport</strong>sman</span>
     <span class="descricao"> s.m. ing. </span>
     <span class="palavra-estrangeira">Estrangeira</span> ...
+
+Alguns verbetes trazem, junto da palavra, a pronúncia entre parênteses:
+"onomatopeia (é)", "fixo (cs)", "aguentar (ü)". Ela é separada do termo,
+senão a comparação com a busca falha.
 """
 
 from __future__ import annotations
@@ -44,17 +48,36 @@ class Entry:
     termo: str
     descricao: str = ""
     origem: str = ORIGIN_VOLP
+    pronuncia: str = ""  # ex.: "é" em "onomatopeia (é)"
 
     @property
     def origem_label(self) -> str:
         return ORIGIN_LABELS.get(self.origem, self.origem.capitalize())
 
+    @property
+    def rotulo(self) -> str:
+        """Termo como o VOLP exibe, com a pronúncia: 'onomatopeia (é)'."""
+        return f"{self.termo} ({self.pronuncia})" if self.pronuncia else self.termo
+
     def to_dict(self) -> dict:
-        return {"termo": self.termo, "descricao": self.descricao, "origem": self.origem}
+        return {"termo": self.termo, "descricao": self.descricao, "origem": self.origem,
+                "pronuncia": self.pronuncia}
 
 
 def _squash(text: str) -> str:
     return " ".join(text.split())
+
+
+_TRAILING_NOTE = re.compile(r"\s*\(([^()]{1,20})\)\s*$")
+
+
+def split_pronunciation(text: str) -> tuple[str, str]:
+    """'onomatopeia (é)' -> ('onomatopeia', 'é'); sem parênteses, pronúncia vazia."""
+    notes: list[str] = []
+    while (match := _TRAILING_NOTE.search(text)) and match.start() > 0:
+        notes.insert(0, _squash(match.group(1)))
+        text = text[: match.start()]
+    return text.strip(), "; ".join(n for n in notes if n)
 
 
 class _RowParser(HTMLParser):
@@ -87,11 +110,12 @@ def parse_row(html: str) -> Entry | None:
     parser = _RowParser()
     parser.feed(html)
     parser.close()
-    termo = _squash("".join(parser.parts.get("item-palavra", [])))
+    termo, pronuncia = split_pronunciation(
+        _squash("".join(parser.parts.get("item-palavra", []))))
     if not termo:
         return None
     descricao = _squash("".join(parser.parts.get("descricao", [])))
-    return Entry(termo=termo, descricao=descricao, origem=parser.origin)
+    return Entry(termo=termo, descricao=descricao, origem=parser.origin, pronuncia=pronuncia)
 
 
 def parse_payload(payload: dict) -> list[Entry]:
