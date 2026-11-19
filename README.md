@@ -2,6 +2,10 @@
 
 Consulta à grafia das palavras no **Vocabulário Ortográfico da Língua Portuguesa (VOLP)**, da Academia Brasileira de Letras, direto da área de trabalho.
 
+<img width="593" height="726" alt="satty-20261119-141123" src="https://github.com/user-attachments/assets/8944075e-e23d-4bcf-bf43-5b863e2b2916" />
+<img width="590" height="725" alt="satty-20261119-141203" src="https://github.com/user-attachments/assets/72581c58-1028-4edf-af15-f1f4dd78b96d" />
+
+
 Digite uma palavra e o BR-voc diz se ela está registrada, se existe com outra acentuação ou se não consta, e sugere grafias parecidas quando há erro de digitação. Feito em Python com GTK 4 e libadwaita, para Linux.
 
 > O BR-voc não tem vínculo com a ABL. Ele usa a mesma busca pública que o site da Academia oferece.
