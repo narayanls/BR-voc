@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=BR-voc
+GenericName=Vocabulário Ortográfico
+Comment=Confira a grafia das palavras no VOLP da Academia Brasileira de Letras
+Exec=br-voc
+Icon=io.github.narayanls.br-voc
+Terminal=false
+Categories=Office;Dictionary;Education;GTK;
+Keywords=volp;ortografia;grafia;vocabulário;dicionário;português;abl;palavra;
+StartupNotify=true

@@ -1,0 +1,27 @@
+# Maintainer: narayanls
+pkgname=br-voc
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Consulta à grafia das palavras no Vocabulário Ortográfico da Língua Portuguesa (VOLP/ABL)"
+arch=('any')
+license=('GPL-3.0-or-later')
+depends=('python' 'python-gobject' 'gtk4' 'libadwaita')
+source=()
+sha256sums=()
+
+# Empacota a árvore usr/ que está ao lado desta pasta (BR-voc/usr).
+# Uso: cd pkgbuild && makepkg -si
+package() {
+  local src="$startdir/../usr"
+
+  # Copia tudo, ignorando caches de bytecode gerados em desenvolvimento
+  (cd "$src" && find . -type f ! -path '*/__pycache__/*' ! -name '*.pyc') |
+  while IFS= read -r file; do
+    install -Dm644 "$src/$file" "$pkgdir/usr/$file"
+  done
+
+  chmod 755 "$pkgdir/usr/bin/br-voc"
+
+  # Pré-compila o bytecode com os caminhos finais
+  python -m compileall -q -d /usr/share/br-voc "$pkgdir/usr/share/br-voc"
+}
