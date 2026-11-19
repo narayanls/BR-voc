@@ -18,6 +18,7 @@ from core.parser import (ORIGIN_FOREIGN, ORIGIN_PLACE, ORIGIN_VOLP, Entry,  # no
 from core.volp import PAGE_URL  # noqa: E402
 from core.vocabulary import SearchResult, Source, Status, Vocabulary  # noqa: E402
 from ui.offline_dialog import OfflineDialog, OfflineManager  # noqa: E402
+from ui.updates import UpdateController  # noqa: E402
 
 MIN_CHARS = 2
 
@@ -51,10 +52,14 @@ class BrVocWindow(Adw.ApplicationWindow):
         self._banner_action = self._retry
         self.offline_manager = OfflineManager(vocabulary.offline)
         self.offline_manager.connect(self._on_offline_event)
+        self.updates = UpdateController(self)
 
         self._build_actions()
         self._build_ui()
         self._show_home()
+
+        self.connect("close-request", self._on_close_request)
+        self.updates.schedule_auto_check()
 
     # ------------------------------------------------------------------ UI
 
@@ -71,6 +76,7 @@ class BrVocWindow(Adw.ApplicationWindow):
         section.append("Limpar cache", "win.clear-cache")
         menu.append_section(None, section)
         about = Gio.Menu()
+        about.append("Procurar atualizações", "win.check-updates")
         about.append("Atalhos do teclado", "win.show-shortcuts")
         about.append(f"Sobre o {APP_NAME}", "app.about")
         menu.append_section(None, about)
@@ -158,6 +164,7 @@ class BrVocWindow(Adw.ApplicationWindow):
             "clear-cache": self._clear_cache,
             "show-shortcuts": self._show_shortcuts,
             "offline": self._open_offline,
+            "check-updates": lambda: self.updates.check(manual=True),
         }
         for name, callback in actions.items():
             action = Gio.SimpleAction.new(name, None)
@@ -472,6 +479,10 @@ class BrVocWindow(Adw.ApplicationWindow):
                 "da Língua Portuguesa (VOLP), da Academia Brasileira de Letras.")
 
     # ------------------------------------------------------------ ações
+
+    def _on_close_request(self, *_args) -> bool:
+        self.updates.relaunch_if_requested()
+        return False  # deixa a janela fechar
 
     def _copy(self, text: str) -> None:
         clipboard = self.get_clipboard()

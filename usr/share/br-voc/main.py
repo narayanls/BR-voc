@@ -14,7 +14,7 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Adw, Gdk, Gio, Gtk  # noqa: E402
 
-from core import APP_ID, APP_NAME, __version__  # noqa: E402
+from core import APP_ID, APP_NAME, updater  # noqa: E402
 from core.cache import Cache  # noqa: E402
 from core.history import History  # noqa: E402
 from core.offline import OfflineList  # noqa: E402
@@ -96,7 +96,7 @@ class BrVocApp(Adw.Application):
         props = dict(
             application_name=APP_NAME,
             application_icon=APP_ID,
-            version=__version__,
+            version=updater.display_version(updater.installed_version()),
             developer_name="narayanls",
             comments="Consulte a grafia oficial das palavras no VOLP.",
             license_type=Gtk.License.GPL_3_0,
