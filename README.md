@@ -98,6 +98,14 @@ A instalação automática só funciona quando o BR-voc foi instalado pelo pacot
 
 Os caminhos seguem as variáveis `XDG_CACHE_HOME` e `XDG_DATA_HOME`, se estiverem definidas.
 
+## 🛠️ Construído com
+
+- [Python 3](https://www.python.org) + [PyGObject](https://pygobject.gnome.org)
+- [GTK4](https://gtk.org) + [Adwaita (libadwaita)](https://gnome.pages.gitlab.gnome.org/libadwaita/)
+- Vibe Coding:
+  Claude Sonnet foi usada para geração de código. O programa foi revisado e testado por humanos.
+---
+
 ## Licença e créditos
 
 O BR-voc é software livre, distribuído sob a [GPL-3.0](LICENSE).
